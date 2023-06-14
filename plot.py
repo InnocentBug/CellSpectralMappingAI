@@ -3,13 +3,10 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-import torch.optim as optim
-import torchvision.transforms as transforms
 from sklearn.manifold import TSNE
-from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from csmai import VAE, TiffDataset, vae_loss
+from csmai import VAE, TiffDataset
 
 
 def plot_projected_data(data):
@@ -36,16 +33,16 @@ def main(argv):
     # Set device (CPU or GPU)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 20).to(device)
+    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 2).to(device)
     checkpoint = torch.load(model_path, map_location=device)
     model.load_state_dict(checkpoint)
     model.eval()
 
     compressed_data = []
-    for i, data in enumerate(tqdm(tiff_data)):
+    for _i, data in enumerate(tqdm(tiff_data)):
         data = data.reshape((1,) + data.shape)
         mu, logvar = model.encode(data)
-        z = model.reparameterize(mu, logvar)
+        z = mu  # model.reparameterize(mu, logvar)
         compressed_data.append(z[0].detach().numpy())
 
     compressed_data = np.asarray(compressed_data)

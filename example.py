@@ -4,7 +4,6 @@ import torch
 import torch.optim as optim
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 from csmai import VAE, TiffDataset, vae_loss
 
@@ -38,7 +37,7 @@ def main(argv):
     )
 
     # Create VAE model
-    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 20).to(device)
+    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 2).to(device)
     print(model)
 
     # Define optimizer
