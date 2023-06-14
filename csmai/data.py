@@ -25,7 +25,7 @@ class TiffDataset(data.Dataset):
             raise StopIteration
         while index >= len(self.data):
             image = tifffile.imread(self.filenames[len(self.data)])
-            image = image.astype(np.float32)
+            image = image.astype(np.float32) / 255.0
             scaled_image = ndimage.zoom(
                 image,
                 (

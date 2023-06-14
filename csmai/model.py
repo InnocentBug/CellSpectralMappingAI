@@ -18,8 +18,8 @@ class VAE(nn.Module):
             nn.ReLU(),
             nn.Conv2d(64, 128, kernel_size=3, stride=2, padding=1),
             nn.ReLU(),
-            # nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
-            # nn.ReLU()
+            nn.Conv2d(128, 256, kernel_size=3, stride=2, padding=1),
+            nn.ReLU(),
         )
 
         # Calculate the flattened size after convolutions
@@ -33,8 +33,8 @@ class VAE(nn.Module):
         # Decoder layers
         self.decoder_fc = nn.Linear(self.latent_dim, conv_output_size)
         self.decoder_conv = nn.Sequential(
-            # nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1),
-            # nn.ReLU(),
+            nn.ConvTranspose2d(256, 128, kernel_size=4, stride=2, padding=1),
+            nn.ReLU(),
             nn.ConvTranspose2d(128, 64, kernel_size=4, stride=2, padding=1),
             nn.ReLU(),
             nn.ConvTranspose2d(64, 32, kernel_size=4, stride=2, padding=1),
@@ -59,8 +59,8 @@ class VAE(nn.Module):
 
     def decode(self, z):
         x = self.decoder_fc(z)
-        # x = x.view(x.size(0), 256, int(self.image_size / 8), int(self.image_size / 8))
-        x = x.view(x.size(0), 128, int(self.image_size / 4), int(self.image_size / 4))
+        x = x.view(x.size(0), 256, int(self.image_size / 8), int(self.image_size / 8))
+        # x = x.view(x.size(0), 128, int(self.image_size / 4), int(self.image_size / 4))
         x = self.decoder_conv(x)
         return x
 

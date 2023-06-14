@@ -4,14 +4,13 @@ import torch
 import torch.optim as optim
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-from tqdm import tqdm
 
 from csmai import VAE, TiffDataset, vae_loss
 
 
 def main(argv):
-    if len(argv) != 1:
-        print("Directory")
+    if len(argv) != 2:
+        print("Directory epoch")
         return
 
     directory = argv[0]
@@ -28,7 +27,7 @@ def main(argv):
 
     # Hyperparameters
     learning_rate = 1e-4
-    num_epochs = 10
+    num_epochs = int(argv[1])
 
     # Define transformations
     transforms.Compose(
@@ -38,7 +37,7 @@ def main(argv):
     )
 
     # Create VAE model
-    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 20).to(device)
+    model = VAE(tiff_data[0].shape[0], tiff_data[0].shape[1], 2).to(device)
     print(model)
 
     # Define optimizer
@@ -49,11 +48,12 @@ def main(argv):
         total_loss = 0.0
 
         # Progress bar
-        progress_bar = tqdm(
-            train_dataloader, desc=f"Epoch {epoch+1}/{num_epochs}", leave=False
-        )
+        # progress_bar = tqdm(
+        #     train_dataloader, desc=f"Epoch {epoch+1}/{num_epochs}", leave=False
+        # )
 
-        for _batch_idx, images in enumerate(progress_bar):
+        # for _batch_idx, images in enumerate(progress_bar):
+        for _batch_idx, images in enumerate(train_dataloader):
             images = images.to(device)
             # Forward pass
             recon_images, mu, logvar = model(images)
@@ -67,7 +67,7 @@ def main(argv):
             optimizer.step()
 
             # Update progress bar description
-            progress_bar.set_postfix({"Loss": loss.item()})
+            # progress_bar.set_postfix({"Loss": loss.item()})
 
             # Update total loss
             total_loss += loss.item()
